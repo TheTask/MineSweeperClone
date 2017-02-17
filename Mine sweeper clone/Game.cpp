@@ -9,7 +9,6 @@ int main()
 	char direction = 'x';
 
 	std::cin >> nm;
-	nm = 50;
 
 	Core core( nm );
 	core.GenerateField();
