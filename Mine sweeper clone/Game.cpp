@@ -8,7 +8,7 @@ int main()
 	int nm;
 	char direction = 'x';
 
-	//std::cin >> nm;
+	std::cin >> nm;
 	nm = 50;
 
 	Core core( nm );
