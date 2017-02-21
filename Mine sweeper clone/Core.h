@@ -15,6 +15,7 @@ class Core
 
 		void WipeConsole();
 		const void DisplayField();
+		void UncoverSquare( int x,int y );
 		void HandleCursor( char dir );
 
 		inline void WriteToArray( int *arr,int index,int value );
@@ -22,6 +23,9 @@ class Core
 
 		inline const int GetFromArray( int *arr,int index );
 		inline const int GetFromArray( int *arr,int row,int column );
+
+		inline const int GetCursorX() { return cursorX; }
+		inline const int GetCursorY() { return cursorY; }
 
 		inline const int GetArraySize();
 

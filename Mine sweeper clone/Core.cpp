@@ -105,9 +105,10 @@ const void Core::DisplayField()
 		std::cout << "|";
 		for( int x = 0; x < width; x++ )
 		{
-			if( GetFromArray( bools,x,y ) == 0 ) //uncovered field
+			bool isCursorThere = ( x == cursorX && y == cursorY ) || ( x - 1 == cursorX && y == cursorY );
+			if( GetFromArray( bools,x,y ) == 0 ) //covered field
 			{
-				if( ( x == cursorX && y == cursorY ) || ( x - 1 == cursorX && y == cursorY ) )
+				if( isCursorThere )
 				{
 					std::cout << "|X";
 				}
@@ -120,11 +121,26 @@ const void Core::DisplayField()
 			{
 				if( GetFromArray( values,x,y ) == 0 )
 				{
-					std::cout << "  ";
+					if( isCursorThere )
+					{
+						std::cout << "| ";
+					}
+					else
+					{
+						std::cout << "  ";
+					}
 				}
 				else
 				{
-					std::cout << " " << GetFromArray( values,x,y );
+					if( isCursorThere )
+					{
+						std::cout << "|" << GetFromArray( values,x,y );
+					}
+					else
+					{
+						std::cout << " " << GetFromArray( values,x,y );
+					}
+					
 				}
 			}
 		}
@@ -144,6 +160,25 @@ const void Core::DisplayField()
 		std::cout << "-";
 	}
 	std::cout << std::endl;
+}
+
+void Core::UncoverSquare( int x,int y )
+{
+	if( GetFromArray( bools,x,y ) == 0 && x >= 0 && y >= 0 && x < width && y < height )
+	{
+		if( GetFromArray( values,x,y ) == 0 )
+		{
+			WriteToArray( bools,x,y,1 );
+			UncoverSquare( x - 1,y     );
+			UncoverSquare( x + 1,y     );
+			UncoverSquare( x    ,y - 1 );
+			UncoverSquare( x    ,y + 1 );
+		}
+		else
+		{
+			WriteToArray( bools,x,y,1 );
+		}
+	}
 }
 
 void Core::HandleCursor( char dir )
