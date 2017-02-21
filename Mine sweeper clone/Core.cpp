@@ -160,6 +160,7 @@ const void Core::DisplayField()
 		std::cout << "-";
 	}
 	std::cout << std::endl;
+	std::cout << cursorX << " " << cursorY << std::endl;
 }
 
 void Core::UncoverSquare( int x,int y )
@@ -183,12 +184,6 @@ void Core::UncoverSquare( int x,int y )
 
 void Core::HandleCursor( char dir )
 {
-	if( cursorX < 1 ) cursorX = 1;
-	if( cursorX >= width -1 ) cursorX = width - 2;
-	if( cursorY < 1 ) cursorY = 1;
-	if( cursorY >= height - 1 ) cursorY = height - 2;
-	
-
 	if( dir == 'w' )
 	{
 		cursorY--;
@@ -205,6 +200,11 @@ void Core::HandleCursor( char dir )
 	{
 		cursorX++;
 	}
+
+	if( cursorX < 0 ) cursorX = 0;
+	if( cursorX >= width ) cursorX = width - 1;
+	if( cursorY < 0 ) cursorY = 0;
+	if( cursorY >= height ) cursorY = height - 1;
 }
 
 void Core::WriteToArray( int *arr,int index,int value )
