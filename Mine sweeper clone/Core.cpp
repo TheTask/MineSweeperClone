@@ -160,7 +160,6 @@ const void Core::DisplayField()
 		std::cout << "-";
 	}
 	std::cout << std::endl;
-	std::cout << cursorX << " " << cursorY << std::endl;
 }
 
 void Core::UncoverSquare( int x,int y )
