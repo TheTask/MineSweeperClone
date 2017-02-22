@@ -15,19 +15,29 @@ class Core
 
 		void WipeConsole();
 		const void DisplayField();
+
 		void UncoverSquare( int x,int y );
+		void FlagSquare( int x,int y );
+		void UnFlagSquare( int x,int y );
+
 		void HandleCursor( char dir );
 
-		inline void WriteToArray( int *arr,int index,int value );
-		inline void WriteToArray( int *arr,int row,int column,int value );
 
-		inline const int GetFromArray( int *arr,int index );
-		inline const int GetFromArray( int *arr,int row,int column );
+		inline void SetValue( int row,int column,int value );
+
+
+		inline const int GetValue( int row,int column );
+		inline const bool GetMineState( int row,int column );
+		inline const bool GetCoverState( int row,int column );
+		inline const bool GetFlagState( int row,int column );
 
 		inline const int GetCursorX() { return cursorX; }
 		inline const int GetCursorY() { return cursorY; }
 
 		inline const int GetArraySize();
+
+		const bool GameWon();
+		const void GameLost();
 
 	private:
 		const int width = 40;
@@ -36,11 +46,18 @@ class Core
 		int cursorX = width / 2;
 		int cursorY = height / 2;
 
-		int *values = new int[ width * height ];
-		int *bools = new int[ width * height ];
+		struct Square
+		{
+			int x;
+			int y;
+			int value;
+			bool mine;
+			bool cover;
+			bool flag;
+		};
+
+		Square *squares = new Square[ width * height ];
+
 		int n_mines;
-
 		char dir;
-
-
 };
