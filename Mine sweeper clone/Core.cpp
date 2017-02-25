@@ -1,11 +1,11 @@
 #include "Core.h"
 
-Core::Core( int n_m )
+Core::Core( short n_m )
 :
 n_mines( n_m )
 {
 	int size = GetArraySize();
-	for( int i = 0; i < size; i++ )
+	for( short i = 0; i < size; i++ )
 	{
 		squares[ i ].x = i % width;
 		squares[ i ].y = i / width;
@@ -27,15 +27,15 @@ void Core::GenerateField()
 	rng.seed( std::random_device()() );
 
 
-	std::uniform_int_distribution< int > rand_width( 0,width - 1 );
-	std::uniform_int_distribution< int > rand_height( 0,height - 1 );
+	std::uniform_int_distribution< short > rand_width( 0,width - 1 );
+	std::uniform_int_distribution< short > rand_height( 0,height - 1 );
 
-	int counter = 0;
+	short counter = 0;
 
 	while( counter < n_mines )
 	{
-		int x = rand_width( rng );
-		int y = rand_height( rng );
+		short x = rand_width( rng );
+		short y = rand_height( rng );
 
 		if( GetMineState( x,y ) == 0 )
 		{
@@ -44,9 +44,9 @@ void Core::GenerateField()
 		}
 	}
 
-	for( int y = 0; y < height; y++ )
+	for( short y = 0; y < height; y++ )
 	{
-		for( int x = 0; x < width; x++ )
+		for( short x = 0; x < width; x++ )
 		{
 			if( GetMineState( x,y ) == 0 )
 			{
@@ -56,9 +56,9 @@ void Core::GenerateField()
 	}
 }
 
-const int Core::MinesAround( int &row,int &column )
+const short Core::MinesAround( short &row,short &column )
 {
-	int sum = 0;
+	short sum = 0;
 
 	if( ( row - 1  >= 0 && column - 1 >= 0 ) && GetMineState( row - 1,column - 1 ) == 1 ) sum++; 
 	if( ( row - 1  >= 0 ) && GetMineState( row - 1,column ) == 1 ) sum++;
@@ -96,17 +96,17 @@ const void Core::DisplayField()
     HANDLE hConsole = GetStdHandle( STD_OUTPUT_HANDLE ); 
 	SetConsoleTextAttribute( hConsole,14 ); //yellow
 
-	for( int a = 0; a < 2 * width + 3; a++ )
+	for( short a = 0; a < 2 * width + 3; a++ )
 	{
 		std::cout << "-";
 	}
 	std::cout << std::endl;
 
-	for( int y = 0; y < height; y++ )
+	for( short y = 0; y < height; y++ )
 	{
 		SetConsoleTextAttribute( hConsole,14 ); //white
 		std::cout << "|";
-		for( int x = 0; x < width; x++ )
+		for( short x = 0; x < width; x++ )
 		{
 			bool isCursorThere = ( x == cursorX && y == cursorY ) || ( x - 1 == cursorX && y == cursorY );
 
@@ -148,7 +148,7 @@ const void Core::DisplayField()
 		std::cout << std::endl;
 	}
 
-	for( int a = 0; a < 2 * width + 3; a++ ) //bottom line
+	for( short a = 0; a < 2 * width + 3; a++ ) //bottom line
 	{
 		std::cout << "-";
 	}
@@ -156,7 +156,7 @@ const void Core::DisplayField()
 }
 
 template <typename T>
-const void Core::DrawWithCursor( T to_draw,int color,int &x,int &y )
+const void Core::DrawWithCursor( T to_draw,short color,short &x,short &y )
 {
 	bool isCursorThere = ( x == cursorX && y == cursorY ) || ( x - 1 == cursorX && y == cursorY );
 
@@ -176,7 +176,7 @@ const void Core::DrawWithCursor( T to_draw,int color,int &x,int &y )
 	}
 }
 
-void Core::UncoverSquare( int x,int y )
+void Core::UncoverSquare( short x,short y )
 {
 	if( GetCoverState( x,y ) == 1 && x >= 0 && y >= 0 && x < width && y < height )
 	{
@@ -195,12 +195,12 @@ void Core::UncoverSquare( int x,int y )
 	}
 }
 
-void Core::FlagSquare( int x,int y )
+void Core::FlagSquare( short x,short y )
 {
 	squares[ width * y + x ].flag = 1;
 }
 
-void Core::UnFlagSquare( int x,int y )
+void Core::UnFlagSquare( short x,short y )
 {
 	squares[ width * y + x ].flag = 0;
 }
@@ -230,40 +230,40 @@ void Core::HandleCursor( char &dir )
 	if( cursorY >= height ) cursorY = height - 1;
 }
 
-inline void Core::SetValue( int &row,int &column,int value )
+inline void Core::SetValue( short &row,short &column,short value )
 {
 	squares[ width * column + row ].value = value;
 }
 
-const int Core::GetValue( int &row,int &column )
+const short Core::GetValue( short &row,short &column )
 {
 	return squares[ width * column + row ].value;
 }
 
-const bool Core::GetMineState( int row,int column )
+const bool Core::GetMineState( short row,short column )
 {
 	return squares[ width * column + row ].mine;
 }
 
-const bool Core::GetCoverState( int &row,int &column )
+const bool Core::GetCoverState( short &row,short &column )
 {
 	return squares[ width * column + row ].cover;
 }
 
-const bool Core::GetFlagState( int row,int column )
+const bool Core::GetFlagState( short row,short column )
 {
 	return squares[ width * column + row ].flag;
 }
 
-const int Core::GetArraySize()
+const short Core::GetArraySize()
 {
 	return width * height; 
 }
 
 const bool Core::GameWon()
 {
-	int counter = 0;
-	for( int i = 0; i < GetArraySize(); i++ )
+	short counter = 0;
+	for( short i = 0; i < GetArraySize(); i++ )
 	{
 		if( squares[ i ].cover == 0 )
 		{
@@ -277,7 +277,7 @@ const bool Core::GameWon()
 
 const void Core::GameLost()
 {
-	for( int i = 0; i < GetArraySize(); i++ )
+	for( short i = 0; i < GetArraySize(); i++ )
 	{
 		squares[ i ].cover = 0;
 	}

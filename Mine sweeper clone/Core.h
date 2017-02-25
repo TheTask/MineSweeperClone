@@ -7,52 +7,52 @@
 class Core
 {
 	public:
-		Core( int n_m );
+		Core( short n_m );
 		~Core();
 
 		void GenerateField();
-		const int MinesAround( int &row,int &column );
+		const short MinesAround( short &row,short &column );
 
 		void WipeConsole();
 		const void DisplayField();
 
 		template< typename T >
-		const void DrawWithCursor( T to_draw,int color,int &x,int &y );
+		const void DrawWithCursor( T to_draw,short color,short &x,short &y );
 
-		void UncoverSquare( int x,int y );
-		void FlagSquare( int x,int y );
-		void UnFlagSquare( int x,int y );
+		void UncoverSquare( short x,short y );
+		void FlagSquare( short x,short y );
+		void UnFlagSquare( short x,short y );
 
 		void HandleCursor( char &dir );
 
 
-		inline void SetValue( int &row,int &column,int value );
+		inline void SetValue( short &row,short &column,short value );
 
-		inline const int GetValue( int &row,int &column );
-		inline const bool GetMineState( int row,int column );
-		inline const bool GetCoverState( int &row,int &column );
-		inline const bool GetFlagState( int row,int column );
+		inline const short GetValue( short &row,short &column );
+		inline const bool GetMineState( short row,short column );
+		inline const bool GetCoverState( short &row,short &column );
+		inline const bool GetFlagState( short row,short column );
 
-		inline const int GetCursorX() { return cursorX; }
-		inline const int GetCursorY() { return cursorY; }
+		inline const short GetCursorX() { return cursorX; }
+		inline const short GetCursorY() { return cursorY; }
 
-		inline const int GetArraySize();
+		inline const short GetArraySize();
 
 		const bool GameWon();
 		const void GameLost();
 
 	private:
-		const int width = 40;
-		const int height = 25;
+		const short width = 40;
+		const short height = 25;
 
-		int cursorX = width / 2;
-		int cursorY = height / 2;
+		short cursorX = width / 2;
+		short cursorY = height / 2;
 
 		struct Square
 		{
-			int x;
-			int y;
-			int value;
+			short x;
+			short y;
+			short value;
 			bool mine;
 			bool cover;
 			bool flag;
@@ -60,7 +60,7 @@ class Core
 
 		Square *squares = new Square[ width * height ];
 
-		int n_mines;
+		short n_mines;
 		char dir;
-		const int cursor_color = 12; //red
+		const short cursor_color = 12; //red
 };
