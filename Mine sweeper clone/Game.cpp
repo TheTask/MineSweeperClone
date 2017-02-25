@@ -63,7 +63,10 @@ int main()
 			
 			if( core.GameWon() )
 			{
+				HANDLE hConsole = GetStdHandle( STD_OUTPUT_HANDLE ); 
+				SetConsoleTextAttribute( hConsole,10 ); //green
 				std::cout << "Congratulations! You have won the game!!!" << std::endl;
+				SetConsoleTextAttribute( hConsole,15 ); //white
 				return 0;
 			}
 		}

@@ -11,24 +11,26 @@ class Core
 		~Core();
 
 		void GenerateField();
-		const int MinesAround( int row,int column );
+		const int MinesAround( int &row,int &column );
 
 		void WipeConsole();
 		const void DisplayField();
+
+		template< typename T >
+		const void DrawWithCursor( T to_draw,int color,int &x,int &y );
 
 		void UncoverSquare( int x,int y );
 		void FlagSquare( int x,int y );
 		void UnFlagSquare( int x,int y );
 
-		void HandleCursor( char dir );
+		void HandleCursor( char &dir );
 
 
-		inline void SetValue( int row,int column,int value );
+		inline void SetValue( int &row,int &column,int value );
 
-
-		inline const int GetValue( int row,int column );
+		inline const int GetValue( int &row,int &column );
 		inline const bool GetMineState( int row,int column );
-		inline const bool GetCoverState( int row,int column );
+		inline const bool GetCoverState( int &row,int &column );
 		inline const bool GetFlagState( int row,int column );
 
 		inline const int GetCursorX() { return cursorX; }
@@ -60,4 +62,5 @@ class Core
 
 		int n_mines;
 		char dir;
+		const int cursor_color = 12; //red
 };

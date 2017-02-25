@@ -54,10 +54,9 @@ void Core::GenerateField()
 			}
 		}
 	}
-
 }
 
-const int Core::MinesAround( int row,int column )
+const int Core::MinesAround( int &row,int &column )
 {
 	int sum = 0;
 
@@ -94,6 +93,8 @@ void Core::WipeConsole()
 const void Core::DisplayField()
 {
 	WipeConsole();
+    HANDLE hConsole = GetStdHandle( STD_OUTPUT_HANDLE ); 
+	SetConsoleTextAttribute( hConsole,14 ); //yellow
 
 	for( int a = 0; a < 2 * width + 3; a++ )
 	{
@@ -103,6 +104,7 @@ const void Core::DisplayField()
 
 	for( int y = 0; y < height; y++ )
 	{
+		SetConsoleTextAttribute( hConsole,14 ); //white
 		std::cout << "|";
 		for( int x = 0; x < width; x++ )
 		{
@@ -110,43 +112,68 @@ const void Core::DisplayField()
 
 			if( GetFlagState( x,y ) == 1 ) //flagged field
 			{
-				if( isCursorThere ) std::cout << "|F";
-				else std::cout << " F";
+				DrawWithCursor( "F",10,x,y ); //green
 			}
 			else if( GetCoverState( x,y ) == 1 ) //covered field
 			{
-				if( isCursorThere ) std::cout << "|X";
-				else std::cout << " X";
+				DrawWithCursor( "X",15,x,y ); //white
 			}
 			else if( GetCoverState( x,y ) == 0 && GetMineState( x,y ) == 1 )
-				if( isCursorThere ) std::cout << "|M";
-				else std::cout << " M";
+				DrawWithCursor( "M",13,x,y ); //purple
 			else //uncovered field
 			{
 				if( GetValue( x,y ) == 0 )
 				{
-					if( isCursorThere ) std::cout << "| ";
-					else std::cout << "  ";
-
+					DrawWithCursor( " ",15,x,y ); //doesn't matter
 				}
 				else
 				{
-					if( isCursorThere ) std::cout << "|" << GetValue( x,y );
-					else std::cout << " " << GetValue( x,y );
+					DrawWithCursor( GetValue( x,y ),11,x,y ); //lt blue
 				}
 			}
 		}
-		if( cursorX == width - 1 && y == cursorY ) std::cout << "||";
-		else std::cout << " |";
+		if( cursorX == width - 1 && y == cursorY ) //right border if cursor is touching it
+		{
+			SetConsoleTextAttribute( hConsole,cursor_color ); //red
+			std::cout << "|";
+			SetConsoleTextAttribute( hConsole,14 ); //yellow
+			std::cout << "|";
+		}
+		else //right border if cursor is not touching it
+		{
+			SetConsoleTextAttribute( hConsole,14 ); //yellow
+			std::cout << " |";
+		}
 
 		std::cout << std::endl;
 	}
 
-	for( int a = 0; a < 2 * width + 3; a++ )
+	for( int a = 0; a < 2 * width + 3; a++ ) //bottom line
 	{
 		std::cout << "-";
 	}
 	std::cout << std::endl;
+}
+
+template <typename T>
+const void Core::DrawWithCursor( T to_draw,int color,int &x,int &y )
+{
+	bool isCursorThere = ( x == cursorX && y == cursorY ) || ( x - 1 == cursorX && y == cursorY );
+
+	HANDLE hConsole = GetStdHandle( STD_OUTPUT_HANDLE ); 
+	
+	if( isCursorThere ) 
+	{
+		SetConsoleTextAttribute( hConsole,cursor_color ); //red
+		std::cout << "|";
+		SetConsoleTextAttribute( hConsole,color ); //chosen color
+		std::cout << to_draw;
+	}
+	else
+	{
+		SetConsoleTextAttribute( hConsole,color ); //chosen color
+		std::cout << " " << to_draw;
+	}
 }
 
 void Core::UncoverSquare( int x,int y )
@@ -168,7 +195,6 @@ void Core::UncoverSquare( int x,int y )
 	}
 }
 
-
 void Core::FlagSquare( int x,int y )
 {
 	squares[ width * y + x ].flag = 1;
@@ -179,7 +205,7 @@ void Core::UnFlagSquare( int x,int y )
 	squares[ width * y + x ].flag = 0;
 }
 
-void Core::HandleCursor( char dir )
+void Core::HandleCursor( char &dir )
 {
 	if( dir == 'w' )
 	{
@@ -204,12 +230,12 @@ void Core::HandleCursor( char dir )
 	if( cursorY >= height ) cursorY = height - 1;
 }
 
-inline void Core::SetValue( int row,int column,int value )
+inline void Core::SetValue( int &row,int &column,int value )
 {
 	squares[ width * column + row ].value = value;
 }
 
-const int Core::GetValue( int row,int column )
+const int Core::GetValue( int &row,int &column )
 {
 	return squares[ width * column + row ].value;
 }
@@ -219,7 +245,7 @@ const bool Core::GetMineState( int row,int column )
 	return squares[ width * column + row ].mine;
 }
 
-const bool Core::GetCoverState( int row,int column )
+const bool Core::GetCoverState( int &row,int &column )
 {
 	return squares[ width * column + row ].cover;
 }
@@ -256,5 +282,9 @@ const void Core::GameLost()
 		squares[ i ].cover = 0;
 	}
 	DisplayField();
+
+	HANDLE hConsole = GetStdHandle( STD_OUTPUT_HANDLE ); 
+	SetConsoleTextAttribute( hConsole,12 ); //red
 	std::cout << "You have lost the game!" << std::endl;
+	SetConsoleTextAttribute( hConsole,15 ); //white
 }
